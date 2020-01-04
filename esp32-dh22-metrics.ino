@@ -43,6 +43,9 @@ Metric distanceTooDry(MetricType::gauge, "distance_too_dry", "DHT22 comfort valu
 Metric comfortStatus(MetricType::gauge, "comfort_status", "DHT22 comfort status value", 1, {
       {"state", ""},
 });
+Metric perceptionStatus(MetricType::gauge, "perception_status", "DHT22 perception status value", 1, {
+      {"state", ""},
+});
 
 
 // value object
@@ -216,6 +219,9 @@ public:
     comfortStatus.setValue(1, {
         {"state", md.comfortStatus.c_str()},
     });
+    perceptionStatus.setValue(1, {
+        {"state", md.perceptionStatus.c_str()},
+    });
 
     return temperature.getString()
       + humidity.getString()
@@ -230,7 +236,8 @@ public:
       + distanceTooCold.getString()
       + distanceTooHumid.getString()
       + distanceTooDry.getString()
-      + comfortStatus.getString();
+      + comfortStatus.getString()
+      + perceptionStatus.getString();
   }
 };
 
