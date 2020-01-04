@@ -76,3 +76,7 @@ too_humid{instance="dc",job="dh22"} 0
 ## Development
 
 Please create issues and Pull requests as you like.
+
+## License
+
+[LICENSE](LICENSE)
