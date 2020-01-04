@@ -64,3 +64,7 @@ too_dry{instance="dc",job="dh22"} 0
 too_hot{instance="dc",job="dh22"} 0
 too_humid{instance="dc",job="dh22"} 0
 ```
+
+## Development
+
+Please create issues and Pull requests as you like.

@@ -14,8 +14,16 @@ const uint16_t PORT   = 9091;                  // pushGW: TCP port
 
 bool DEBUG = false;
 
+// prometheus metadata
 String JOB = String("dh22");
 String INSTANCE = String("dc");
+
+enum DATA_TYPE {CSV, JSON, PROMETHEUS};
+
+// enable serial outputter: CSV, JSON, PROMETHEUS
+DATA_TYPE SERIAL_OUTPUTTER = CSV;
+// enable data push to HTTP endpoint CSV, JSON, PROMETHEUS
+DATA_TYPE PUSH_DATA = PROMETHEUS;
 
 // prometheus_metric
 #include "prometheus_metric.h"
@@ -279,39 +287,59 @@ void loop()
   m.createMetricsData();
   MetricData md = m.getMetricsData();
 
-  // json data
-  /*
-    String jsonData = m.JSON();
+  String jsonData = m.JSON();
+  String csvData = m.CSV();
+  String prometheusData = m.Prometheus();
+
+  switch (SERIAL_OUTPUTTER) {
+  case JSON:
     Serial.println(jsonData);
+    break;
+  case CSV:
+    Serial.println(csvData);
+    break;
+  case PROMETHEUS:
+    Serial.println(prometheusData);
+    break;
+  }
+
+  switch (PUSH_DATA) {
+  case JSON:
     client.print("POST /temperature HTTP/1.1\r\n");
     client.print("Content-Type: application/json\r\n");
+    client.print("Content-Length: ");
+    client.print(jsonData.length());
     client.print("Host: ");
     client.print(HOST);
     client.print("\r\n\r\n");
     client.print(jsonData);
-  */
-  // CSV data
-  /*
-    String csvData = m.CSV();
-    Serial.println(csvData);
-  */
-
-  // Prometheus pushGW
-  String prometheusData = m.Prometheus();
-  Serial.println(prometheusData);
-  client.print("POST /metrics/job/");
-  client.print(JOB);
-  client.print("/instance/");
-  client.print(INSTANCE);
-  client.print(" HTTP/1.1\r\n");
-  client.print("Content-Type: application/x-www-form-urlencoded\r\n");
-  client.print("Content-Length: ");
-  client.print(prometheusData.length());
-  client.print("\r\n");
-  client.print("Host: ");
-  client.print(HOST);
-  client.print("\r\n\r\n");
-  client.print(prometheusData);
+    break;
+  case CSV:
+    client.print("POST /temperature HTTP/1.1\r\n");
+    client.print("Content-Type: text/plain\r\n");
+    client.print("Content-Length: ");
+    client.print(csvData.length());
+    client.print("Host: ");
+    client.print(HOST);
+    client.print("\r\n\r\n");
+    client.print(csvData);
+    break;
+  case PROMETHEUS:
+    client.print("POST /metrics/job/");
+    client.print(JOB);
+    client.print("/instance/");
+    client.print(INSTANCE);
+    client.print(" HTTP/1.1\r\n");
+    client.print("Content-Type: application/x-www-form-urlencoded\r\n");
+    client.print("Content-Length: ");
+    client.print(prometheusData.length());
+    client.print("\r\n");
+    client.print("Host: ");
+    client.print(HOST);
+    client.print("\r\n\r\n");
+    client.print(prometheusData);
+    break;
+  }
 
   int maxloops = 0;
   // wait for the server's reply to become available
