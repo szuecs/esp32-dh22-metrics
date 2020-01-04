@@ -9,6 +9,14 @@ using WiFi.
 Prometheus can scrape metrics from the pushgateway and you can use
 [grafana](https://github.com/grafana/grafana) to show nice dashboards.
 
+## Features
+
+You can select different serial output and push data types. Both
+supports CSV, JSON and Prometheus data.
+Serial output defaults to CSV and push data defaults to Prometheus.
+
+All data and functions exported by https://github.com/beegee-tokyo/DHTesp
+library are used to provide the metrics.
 
 ## Requirements
 
